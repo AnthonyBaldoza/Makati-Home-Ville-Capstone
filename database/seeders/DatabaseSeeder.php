@@ -20,10 +20,10 @@ class DatabaseSeeder extends Seeder
 
         $this->call(RoleSeeder::class);
 
-    User::factory()->create([
-        'name' => 'HOA Admin',
-        'email' => 'admin@mhv.test',
-        'role_id' => Role::where('name', 'HOA Admin')->value('id'),
-    ]);
+        User::factory()->create([
+            'name' => 'HOA Admin',
+            'email' => 'admin@mhv.test',
+            'role_id' => Role::where('name', 'HOA Admin')->value('id'),
+        ]);
     }
 }

@@ -3,7 +3,6 @@
 namespace Database\Seeders;
 
 use App\Models\Role;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class RoleSeeder extends Seeder
@@ -13,7 +12,7 @@ class RoleSeeder extends Seeder
      */
     public function run(): void
     {
-Role::firstOrCreate(['name' => 'HOA Admin']);
-Role::firstOrCreate(['name' => 'Resident']);
+        Role::firstOrCreate(['name' => 'HOA Admin']);
+        Role::firstOrCreate(['name' => 'Resident']);
     }
 }

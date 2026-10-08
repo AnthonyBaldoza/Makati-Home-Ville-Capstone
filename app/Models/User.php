@@ -30,15 +30,19 @@ class User extends Authenticatable
         ];
     }
 
-    public function role()  
+    public function role()
     {
         return $this->belongsTo(Role::class);
 
     }
 
     public function announcements()
-{
-    return $this->hasMany(Announcement::class);
-}
+    {
+        return $this->hasMany(Announcement::class);
+    }
 
+    public function complaints()
+    {
+        return $this->hasMany(Complaint::class);
+    }
 }
