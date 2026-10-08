@@ -30,8 +30,15 @@ class User extends Authenticatable
         ];
     }
 
-    public function role()          // <-- here
+    public function role()  
     {
         return $this->belongsTo(Role::class);
+
     }
+
+    public function announcements()
+{
+    return $this->hasMany(Announcement::class);
+}
+
 }
