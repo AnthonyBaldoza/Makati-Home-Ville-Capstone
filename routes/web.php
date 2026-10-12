@@ -15,3 +15,6 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 Route::get('/admin-test', function () {
     return 'Welcome, Admin';
 })->middleware(['auth', 'role:HOA Admin']);
+Route::get('/', function () {
+    return view('home');
+})->middleware('auth');
