@@ -23,6 +23,7 @@ class DatabaseSeeder extends Seeder
         User::factory()->create([
             'name' => 'HOA Admin',
             'email' => 'admin@mhv.test',
+            'password' => 'admin12345',
             'role_id' => Role::where('name', 'HOA Admin')->value('id'),
         ]);
     }
