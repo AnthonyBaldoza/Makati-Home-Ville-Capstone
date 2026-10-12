@@ -43,32 +43,34 @@ class AnnouncementController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Announcement $announcement)
     {
-        //
+        return view('announcements.show', compact('announcement'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
+    public function edit(Announcement $announcement)
     {
-        //
+        return view('announcements.edit', compact('announcement'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
+    public function update(Request $request, Announcement $announcement)
     {
-        //
+        $validated = $request->validate([
+            'title' => ['required', 'string', 'max:150'],
+            'body' => ['required', 'string'],
+        ]);
+
+        $announcement->update($validated);
+
+        return redirect()->route('announcements.show', $announcement)
+            ->with('success', 'Announcement updated.');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
+    public function destroy(Announcement $announcement)
     {
-        //
+        $announcement->delete();
+
+        return redirect()->route('announcements.index')
+            ->with('success', 'Announcement deleted.');
     }
 }
