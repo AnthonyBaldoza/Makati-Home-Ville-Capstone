@@ -16,15 +16,30 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
-
         $this->call(RoleSeeder::class);
 
-        User::factory()->create([
+        $admin = User::factory()->create([
             'name' => 'HOA Admin',
             'email' => 'admin@mhv.test',
             'password' => 'admin12345',
             'role_id' => Role::where('name', 'HOA Admin')->value('id'),
+        ]);
+
+        $resident = User::factory()->create([
+            'name' => 'Demo Resident',
+            'email' => 'resident@mhv.test',
+            'password' => 'resident12345',
+            'role_id' => Role::where('name', 'Resident')->value('id'),
+        ]);
+
+        $admin->announcements()->create([
+            'title' => 'Welcome to Makati Home Ville',
+            'body' => 'This is the official community portal for announcements and complaints.',
+        ]);
+
+        $resident->complaints()->create([
+            'title' => 'Broken street light',
+            'description' => 'The street light near Block 3 has been out for a week.',
         ]);
     }
 }
