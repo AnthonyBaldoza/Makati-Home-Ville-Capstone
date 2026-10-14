@@ -1,30 +1,24 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>File a Complaint</title>
-</head>
-<body>
-    <h1>File a Complaint</h1>
+@extends('layouts.app')
+@section('title', 'File a Complaint')
+@section('content')
+    <div class="card">
+        <h1>File a Complaint</h1>
 
-    <form method="POST" action="{{ route('complaints.store') }}">
-        @csrf
+        <form method="POST" action="{{ route('complaints.store') }}">
+            @csrf
 
-        <div>
-            <label for="title">Title</label><br>
+            <label for="title">Title</label>
             <input type="text" id="title" name="title" value="{{ old('title') }}">
-            @error('title') <p>{{ $message }}</p> @enderror
-        </div>
+            @error('title') <p class="error">{{ $message }}</p> @enderror
 
-        <div>
-            <label for="description">Description</label><br>
+            <label for="description">Description</label>
             <textarea id="description" name="description" rows="5">{{ old('description') }}</textarea>
-            @error('description') <p>{{ $message }}</p> @enderror
-        </div>
+            @error('description') <p class="error">{{ $message }}</p> @enderror
 
-        <button type="submit">Submit</button>
-    </form>
-
-    <a href="{{ route('complaints.index') }}">Cancel</a>
-</body>
-</html>
+            <div class="actions">
+                <button type="submit" class="btn">Submit</button>
+                <a href="{{ route('complaints.index') }}">Cancel</a>
+            </div>
+        </form>
+    </div>
+@endsection
