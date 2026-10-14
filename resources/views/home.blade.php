@@ -7,9 +7,11 @@
 <body>
     <h1>Welcome, {{ auth()->user()->name }}</h1>
     <p>Role: {{ auth()->user()->role->name }}</p>
+
     <nav>
-    <a href="{{ route('announcements.index') }}">Announcements</a>
-</nav>
+        <a href="{{ route('announcements.index') }}">Announcements</a>
+        <a href="{{ route('complaints.index') }}">Complaints</a>
+    </nav>
 
     @if (auth()->user()->role->name === 'HOA Admin')
         <p>You are an admin. Admin tools will appear here.</p>
