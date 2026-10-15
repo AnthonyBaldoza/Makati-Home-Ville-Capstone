@@ -30,6 +30,16 @@ class DatabaseSeeder extends Seeder
             'email' => 'resident@mhv.test',
             'password' => 'resident12345',
             'role_id' => Role::where('name', 'Resident')->value('id'),
+            'block' => '3',
+            'lot' => '12',
+            'mobile_number' => '09171234567',
+        ]);
+
+        User::factory()->create([
+            'name' => 'Facility Staff',
+            'email' => 'staff@mhv.test',
+            'password' => 'staff12345',
+            'role_id' => Role::where('name', 'Facility Staff')->value('id'),
         ]);
 
         $admin->announcements()->create([

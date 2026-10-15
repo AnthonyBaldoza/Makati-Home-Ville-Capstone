@@ -20,6 +20,15 @@
             <label for="email">Email</label>
             <input type="email" id="email" name="email" value="{{ old('email') }}" required>
 
+            <label for="block">Block</label>
+            <input type="text" id="block" name="block" value="{{ old('block') }}" required>
+
+            <label for="lot">Lot</label>
+            <input type="text" id="lot" name="lot" value="{{ old('lot') }}" required>
+
+            <label for="mobile_number">Mobile Number (09XXXXXXXXX)</label>
+            <input type="text" id="mobile_number" name="mobile_number" value="{{ old('mobile_number') }}" required>
+
             <label for="password">Password</label>
             <input type="password" id="password" name="password" required>
 

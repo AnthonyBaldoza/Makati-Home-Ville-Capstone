@@ -14,5 +14,6 @@ class RoleSeeder extends Seeder
     {
         Role::firstOrCreate(['name' => 'HOA Admin']);
         Role::firstOrCreate(['name' => 'Resident']);
+        Role::firstOrCreate(['name' => 'Facility Staff']);
     }
 }
