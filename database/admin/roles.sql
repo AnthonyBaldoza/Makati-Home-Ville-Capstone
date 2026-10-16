@@ -22,3 +22,9 @@ GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA public TO mhv_app;
 GRANT SELECT ON roles, announcements, complaints TO mhv_readonly;
 GRANT SELECT (id, name, email, block, lot, mobile_number, role_id, created_at, updated_at)
     ON users TO mhv_readonly;
+
+    
+-- Audit table: the app and the reporting role can read history but never change it.
+-- Only the trigger function (SECURITY DEFINER) writes to it.
+REVOKE INSERT, UPDATE, DELETE ON complaint_status_history FROM mhv_app;
+GRANT SELECT ON complaint_status_history TO mhv_app, mhv_readonly;
