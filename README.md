@@ -22,18 +22,23 @@ Planned after the midterm: facility reservation with conflict detection, emergen
 ## Setup
 
 1. Clone the repository and install dependencies:
+
 ```bash
    git clone https://github.com/AnthonyBaldoza/Makati-Home-Ville-Capstone.git
    cd Makati-Home-Ville-Capstone
    composer install
 ```
+
 2. Create the environment file and application key:
+
 ```bash
    copy .env.example .env
    php artisan key:generate
 ```
+
 3. In pgAdmin, create an empty database named `mhv`.
 4. Edit `.env` so the database lines read:
+
 ```
    DB_CONNECTION=pgsql
    DB_HOST=127.0.0.1
@@ -42,33 +47,37 @@ Planned after the midterm: facility reservation with conflict detection, emergen
    DB_USERNAME=postgres
    DB_PASSWORD=your_postgres_password
 ```
+
 5. Run the migrations and seeders from a clean database:
+
 ```bash
    php artisan migrate:fresh --seed
 ```
+
 6. Start the server and open http://127.0.0.1:8000:
+
 ```bash
    php artisan serve
 ```
 
 ## Demo accounts
 
-| Role | Email | Password |
-|---|---|---|
-| HOA Admin | admin@mhv.test | admin12345 |
-| Resident | resident@mhv.test | resident12345 |
-| Facility Staff | staff@mhv.test | staff12345 |
+| Role           | Email             | Password      |
+| -------------- | ----------------- | ------------- |
+| HOA Admin      | admin@mhv.test    | admin12345    |
+| Resident       | resident@mhv.test | resident12345 |
+| Facility Staff | staff@mhv.test    | staff12345    |
 
 New accounts created through the registration page are always Residents.
 
 ## Database design
 
-| Table | Purpose |
-|---|---|
-| `roles` | HOA Admin, Resident, Facility Staff |
-| `users` | accounts, with a `role_id` foreign key to `roles`, plus block, lot, and mobile number for residents |
-| `announcements` | posted by an Admin (`user_id` foreign key) |
-| `complaints` | filed by a Resident (`user_id` foreign key), `status` defaults to Pending |
+| Table           | Purpose                                                                                             |
+| --------------- | --------------------------------------------------------------------------------------------------- |
+| `roles`         | HOA Admin, Resident, Facility Staff                                                                 |
+| `users`         | accounts, with a `role_id` foreign key to `roles`, plus block, lot, and mobile number for residents |
+| `announcements` | posted by an Admin (`user_id` foreign key)                                                          |
+| `complaints`    | filed by a Resident (`user_id` foreign key), `status` defaults to Pending                           |
 
 Design decisions:
 
@@ -96,3 +105,97 @@ Design decisions:
 - `database/migrations/` and `database/seeders/`: schema and demo data
 - `resources/views/`: Blade views using the shared `layouts/app.blade.php`
 - `public/css/app.css`: plain CSS, no build step required
+
+## Database administration (COMP 018)
+
+### ERD
+
+![ERD](docs/erd.png)
+
+### Setup order
+
+The database objects are created in this order. Running `migrate:fresh` drops every table, so the grants must be applied again afterward:
+
+```bash
+php artisan migrate:fresh --seed
+psql -h 127.0.0.1 -U postgres -d mhv -f database/admin/roles.sql
+```
+
+On Windows, `psql` is at `C:\Program Files\PostgreSQL\17\bin\psql.exe`.
+
+### Backup and restore
+
+- `database/admin/backup.bat` runs `pg_dump` in custom format (`-Fc`) and writes `backups\mhv_<date>.dump`. Backups are ignored by Git.
+- `database/admin/restore.bat <file>` restores a dump into a new database called `mhv_restore`, so the original database is never overwritten.
+- Both scripts read the password from the `PGPASSWORD` environment variable. It is never stored in the repository.
+
+```powershell
+$env:PGPASSWORD="your_postgres_password"
+.\database\admin\backup.bat
+.\database\admin\restore.bat backups\mhv_2026-10-15_1902.dump
+```
+
+Restore was verified by comparing row counts of `users`, `roles`, `announcements`, and `complaints` in `mhv` and `mhv_restore`; they matched.
+
+### Roles and privileges
+
+`database/admin/roles.sql` creates two PostgreSQL roles in addition to the owner (`postgres`):
+
+| Role           | Privileges                                                                                            | Purpose                                                      |
+| -------------- | ----------------------------------------------------------------------------------------------------- | ------------------------------------------------------------ |
+| `mhv_app`      | SELECT, INSERT, UPDATE, DELETE on all tables, sequence usage; read-only on `complaint_status_history` | Used by Laravel at runtime. It cannot create or drop tables. |
+| `mhv_readonly` | SELECT on `roles`, `announcements`, `complaints`, and non-secret columns of `users`                   | Reporting. It cannot modify data or read password hashes.    |
+
+Verified behavior:
+
+- `mhv_readonly`: `DELETE FROM complaints` fails with `permission denied`, and `SELECT password FROM users` fails with `permission denied`.
+- `mhv_app`: `DROP TABLE complaints` fails with `must be owner of table complaints`, and `DELETE FROM complaint_status_history` fails with `permission denied`.
+
+The default passwords in `roles.sql` are for the demo only and must be changed in a real deployment.
+
+### Index and EXPLAIN
+
+The complaints list for a Resident filters by `user_id` and sorts by `created_at`. PostgreSQL does not index foreign key columns automatically, so a composite index was added in migration `add_user_created_index_to_complaints_table`:
+
+```sql
+CREATE INDEX complaints_user_id_created_at_index ON complaints (user_id, created_at);
+```
+
+It was tested on a copy of the database (`mhv_restore`) loaded with 100,000 complaints for 2,000 users:
+
+```sql
+EXPLAIN (ANALYZE, BUFFERS)
+SELECT * FROM complaints WHERE user_id = 1000 ORDER BY created_at DESC;
+```
+
+|                | Without the index                            | With the index    |
+| -------------- | -------------------------------------------- | ----------------- |
+| Plan           | Seq Scan (99,951 rows removed by the filter) | Bitmap Index Scan |
+| Buffers        | 1,423                                        | 56                |
+| Execution time | 18.916 ms                                    | 0.419 ms          |
+
+A Sort step remains in the plan because the 50 matching rows are spread across 50 table pages, so the planner collects them with a bitmap and sorts them in memory.
+
+### Trigger and function
+
+`log_complaint_status_change()` and the trigger `complaints_status_audit` write a row to `complaint_status_history` (complaint, old status, new status, database user, time) whenever a complaint's `status` actually changes. It is created in migration `create_complaint_status_history_table`.
+
+- It runs inside the database, so it records changes no matter who makes them (the app, pgAdmin, or a script).
+- The function is `SECURITY DEFINER`, so `mhv_app` does not need INSERT rights on the history table and cannot edit the audit trail.
+- It uses `session_user` so the real login is recorded.
+- Updating a complaint to the same status does not create a row.
+
+### Laravel connection settings
+
+Laravel connects through the `pgsql` connection in `config/database.php`, which reads these values from `.env`:
+
+```
+DB_CONNECTION=pgsql
+DB_HOST=127.0.0.1
+DB_PORT=5432
+DB_DATABASE=mhv
+DB_USERNAME=postgres
+DB_PASSWORD=your_postgres_password
+```
+
+Use `postgres` to run migrations and seeders. To run the application with least privilege, set `DB_USERNAME=mhv_app` and `DB_PASSWORD=change_me_app`, then run `php artisan config:clear`. This was verified: the application worked normally, and a status change made in the browser was recorded in `complaint_status_history` with `db_user = mhv_app`.
