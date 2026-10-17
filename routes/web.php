@@ -5,18 +5,12 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ComplaintController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return view('welcome');
-});
-
 Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
 Route::post('/register', [AuthController::class, 'register']);
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
-Route::post('/login', [AuthController::class, 'login']);
+Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:5,1');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
-Route::get('/admin-test', function () {
-    return 'Welcome, Admin';
-})->middleware(['auth', 'role:HOA Admin']);
+
 Route::get('/', function () {
     return view('home');
 })->middleware('auth');

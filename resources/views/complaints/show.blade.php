@@ -17,7 +17,7 @@
 
                 <label for="status">Update status</label>
                 <select id="status" name="status">
-                    @foreach (['Pending', 'In Progress', 'Resolved'] as $status)
+                    @foreach (\App\Models\Complaint::STATUSES as $status)
                         <option value="{{ $status }}" @selected($complaint->status === $status)>{{ $status }}</option>
                     @endforeach
                 </select>

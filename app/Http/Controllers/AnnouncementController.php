@@ -32,9 +32,7 @@ class AnnouncementController extends Controller
             'body' => ['required', 'string'],
         ]);
 
-        $validated['user_id'] = $request->user()->id;
-
-        Announcement::create($validated);
+        $request->user()->announcements()->create($validated);
 
         return redirect()->route('announcements.index')
             ->with('success', 'Announcement posted.');

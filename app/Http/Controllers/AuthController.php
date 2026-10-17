@@ -31,6 +31,7 @@ class AuthController extends Controller
         $user = User::create($validated);
 
         Auth::login($user);
+        $request->session()->regenerate();
 
         return redirect('/');
     }
