@@ -57,7 +57,7 @@ class ComplaintController extends Controller
     public function updateStatus(Request $request, Complaint $complaint)
     {
         $validated = $request->validate([
-            'status' => ['required', Rule::in(['Pending', 'In Progress', 'Resolved'])],
+            'status' => ['required', Rule::in(Complaint::STATUSES)],
         ]);
 
         $complaint->status = $validated['status'];
