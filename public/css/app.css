@@ -1,0 +1,168 @@
+* {
+    box-sizing: border-box;
+}
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #f4f6f8;
+    color: #222;
+}
+a {
+    color: #1f5fbf;
+    text-decoration: none;
+}
+a:hover {
+    text-decoration: underline;
+}
+
+.topbar {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 12px 24px;
+    background: #1f3b5c;
+    color: #fff;
+}
+.topbar a {
+    color: #fff;
+}
+.topbar nav {
+    display: flex;
+    gap: 16px;
+    flex: 1;
+}
+.topbar form {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 0;
+}
+.brand {
+    font-weight: bold;
+    font-size: 18px;
+}
+.who {
+    font-size: 14px;
+}
+
+.container {
+    max-width: 900px;
+    margin: 24px auto;
+    padding: 0 16px;
+}
+.card {
+    background: #fff;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    margin-bottom: 16px;
+}
+h1 {
+    margin-top: 0;
+}
+
+.flash {
+    background: #e3f6e8;
+    border: 1px solid #9ad3a8;
+    padding: 10px 14px;
+    border-radius: 6px;
+    margin-bottom: 16px;
+}
+.error {
+    color: #b42318;
+    font-size: 14px;
+    margin: 4px 0 0;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #fff;
+}
+th,
+td {
+    padding: 10px;
+    border-bottom: 1px solid #e5e7eb;
+    text-align: left;
+}
+th {
+    background: #eef2f6;
+}
+
+label {
+    display: block;
+    margin-bottom: 4px;
+    font-weight: bold;
+}
+input[type="text"],
+input[type="email"],
+input[type="password"],
+textarea,
+select {
+    width: 100%;
+    padding: 8px 10px;
+    border: 1px solid #c8d0d9;
+    border-radius: 6px;
+    margin-bottom: 12px;
+    font: inherit;
+}
+
+.btn {
+    display: inline-block;
+    padding: 8px 14px;
+    border: 0;
+    border-radius: 6px;
+    background: #1f5fbf;
+    color: #fff;
+    cursor: pointer;
+    font: inherit;
+}
+.btn:hover {
+    background: #174a96;
+    text-decoration: none;
+}
+.btn-outline {
+    background: transparent;
+    border: 1px solid #fff;
+    color: #fff;
+}
+.btn-danger {
+    background: #b42318;
+}
+
+.badge {
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 13px;
+    background: #e5e7eb;
+}
+.auth {
+    max-width: 420px;
+    margin: 0 auto;
+}
+.error-list,
+.error-box {
+    color: #b42318;
+    background: #fdecea;
+    border: 1px solid #f5b5ae;
+    padding: 10px 14px;
+    border-radius: 6px;
+    margin-bottom: 12px;
+}
+.error-list {
+    padding-left: 30px;
+}
+.meta {
+    color: #667085;
+    font-size: 14px;
+}
+.actions {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    margin-top: 12px;
+}
+form.inline {
+    display: inline;
+    margin: 0;
+}

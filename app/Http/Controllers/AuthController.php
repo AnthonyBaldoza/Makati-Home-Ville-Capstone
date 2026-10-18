@@ -20,6 +20,9 @@ class AuthController extends Controller
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:50'],
             'email' => ['required', 'email', 'unique:users,email'],
+            'block' => ['required', 'string', 'max:50'],
+            'lot' => ['required', 'string', 'max:50'],
+            'mobile_number' => ['required', 'regex:/^09\d{9}$/', 'unique:users,mobile_number'],
             'password' => ['required', 'min:8', 'confirmed'],
         ]);
 
@@ -28,6 +31,7 @@ class AuthController extends Controller
         $user = User::create($validated);
 
         Auth::login($user);
+        $request->session()->regenerate();
 
         return redirect('/');
     }
