@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="fil">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Makati Home Ville</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <header class="topbar">
+    <div class="wrap topbar-inner">
+      <a class="brand" href="#top">Makati Home Ville</a>
+      <nav aria-label="Main">
+        <a href="#announcements">Announcements</a>
+        <a href="#complaints">Complaints</a>
+        <a href="#reservations">Reservations</a>
+        <a class="btn-outline" href="#">Log in</a>
+      </nav>
+    </div>
+  </header>
+
+  <div class="alert" role="alert" id="top">
+    <div class="wrap alert-inner">
+      <strong>Emergency alert</strong>
+      <span>Typhoon Signal No. 2 sa Laguna. Manatili sa loob ng bahay. Hotline: 0917-000-0000.</span>
+      <time datetime="2026-10-18T16:30">Today, 4:30 PM</time>
+    </div>
+  </div>
+
+  <main class="wrap">
+
+    <div class="intro">
+      <h1>Makati Home Ville</h1>
+      <p>Dayap, Calauan, Laguna. Mga balita, reklamo, at reserbasyon ng komunidad.</p>
+    </div>
+
+    <div class="layout">
+
+      <section id="announcements" class="panel">
+        <h2>Announcements</h2>
+        <ul class="feed">
+          <li>
+            <time datetime="2026-10-17">Oct 17</time>
+            <div>
+              <h3>Water interruption sa Phase 2</h3>
+              <p>Walang tubig mula 8:00 AM hanggang 3:00 PM sa Oct 20 dahil sa pipe repair.</p>
+            </div>
+          </li>
+          <li>
+            <time datetime="2026-10-15">Oct 15</time>
+            <div>
+              <h3>Monthly homeowners' meeting</h3>
+              <p>Sa Oct 25, 4:00 PM, sa clubhouse. Pag-uusapan ang road repair at street lights.</p>
+            </div>
+          </li>
+          <li>
+            <time datetime="2026-10-12">Oct 12</time>
+            <div>
+              <h3>Schedule ng garbage collection</h3>
+              <p>Lunes at Huwebes ang koleksyon ng basura. Ilabas ang basura bago mag-7:00 AM.</p>
+            </div>
+          </li>
+          <li>
+            <time datetime="2026-10-08">Oct 8</time>
+            <div>
+              <h3>Bagong curfew para sa basketball court</h3>
+              <p>Hanggang 9:00 PM na lang ang paggamit ng court mula Oct 10.</p>
+            </div>
+          </li>
+        </ul>
+      </section>
+
+      <aside class="side">
+
+        <section class="panel" aria-labelledby="report-title">
+          <h2 id="report-title">Report a complaint</h2>
+          <form action="#" method="post">
+            <label for="c-category">Category</label>
+            <select id="c-category" name="category">
+              <option>Basura</option>
+              <option>Ilaw sa kalsada</option>
+              <option>Tubig at drainage</option>
+              <option>Ingay</option>
+              <option>Kaligtasan</option>
+              <option>Iba pa</option>
+            </select>
+
+            <label for="c-details">Details</label>
+            <textarea id="c-details" name="details" rows="3" placeholder="Ilarawan ang problema at saan ito nangyayari"></textarea>
+
+            <button type="submit" class="btn">Submit complaint</button>
+          </form>
+        </section>
+
+        <section class="panel" aria-labelledby="reserve-title">
+          <h2 id="reserve-title">Reserve a facility</h2>
+          <form action="#" method="post">
+            <label for="r-facility">Facility</label>
+            <select id="r-facility" name="facility">
+              <option>Clubhouse</option>
+              <option>Basketball court</option>
+              <option>Multipurpose hall</option>
+            </select>
+
+            <div class="row">
+              <div>
+                <label for="r-date">Date</label>
+                <input id="r-date" name="date" type="date">
+              </div>
+              <div>
+                <label for="r-time">Time</label>
+                <input id="r-time" name="time" type="time">
+              </div>
+            </div>
+
+            <button type="submit" class="btn">Reserve</button>
+          </form>
+        </section>
+
+      </aside>
+    </div>
+
+    <section id="complaints" class="panel">
+      <h2>Complaints</h2>
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr><th>Ref</th><th>Category</th><th>Details</th><th>Filed</th><th>Status</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>C-0012</td><td>Ilaw sa kalsada</td><td>Patay ang ilaw sa Block 4, Lot 7</td><td>Oct 16</td><td><span class="status s-progress">In progress</span></td></tr>
+            <tr><td>C-0011</td><td>Basura</td><td>Hindi nakolekta ang basura sa Phase 1</td><td>Oct 14</td><td><span class="status s-done">Resolved</span></td></tr>
+            <tr><td>C-0010</td><td>Ingay</td><td>Malakas na videoke pagkatapos ng 10:00 PM</td><td>Oct 11</td><td><span class="status s-pending">Pending</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="reservations" class="panel">
+      <h2>Reservations</h2>
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr><th>Facility</th><th>Date</th><th>Time</th><th>Status</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Clubhouse</td><td>Oct 25, 2026</td><td>4:00 PM</td><td><span class="status s-done">Approved</span></td></tr>
+            <tr><td>Basketball court</td><td>Oct 28, 2026</td><td>6:00 PM</td><td><span class="status s-pending">Pending</span></td></tr>
+            <tr><td>Multipurpose hall</td><td>Nov 2, 2026</td><td>1:00 PM</td><td><span class="status s-rejected">Declined</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="footer">
+    <div class="wrap">Makati Home Ville, Dayap, Calauan, Laguna. Group 10, BSIT 3-1.</div>
+  </footer>
+
+</body>
+</html>
