@@ -38,3 +38,9 @@ Route::middleware('auth')->group(function () {
 Route::middleware(['auth', 'role:HOA Admin'])->group(function () {
     Route::put('/complaints/{complaint}/status', [ComplaintController::class, 'updateStatus'])->name('complaints.status');
 });
+
+
+Route::get('/forgot-password', [\App\Http\Controllers\PasswordResetController::class, 'showForgot'])->name('password.request');
+Route::post('/forgot-password', [\App\Http\Controllers\PasswordResetController::class, 'sendLink'])->middleware('throttle:5,1')->name('password.email');
+Route::get('/reset-password/{token}', [\App\Http\Controllers\PasswordResetController::class, 'showReset'])->name('password.reset');
+Route::post('/reset-password', [\App\Http\Controllers\PasswordResetController::class, 'reset'])->middleware('throttle:5,1')->name('password.update');

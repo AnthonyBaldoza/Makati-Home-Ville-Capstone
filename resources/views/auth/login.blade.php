@@ -4,6 +4,10 @@
     <div class="card auth">
         <h1>Login</h1>
 
+        @if (session('status'))
+            <div class="flash">{{ session('status') }}</div>
+        @endif
+
         @if ($errors->any())
             <div class="error-box">{{ $errors->first() }}</div>
         @endif
@@ -19,6 +23,7 @@
             <button type="submit" class="btn">Login</button>
         </form>
 
+        <p><a href="{{ route('password.request') }}">Forgot password?</a></p>
         <p><a href="{{ route('register') }}">Create an account</a></p>
     </div>
 @endsection
