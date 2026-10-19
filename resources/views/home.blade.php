@@ -1,28 +1,7 @@
 @extends('layouts.app')
 @section('title', 'Home')
 
-@section('alert')
-    {{-- Placeholder lang ito. Palitan o alisin kapag may emergency alerts na ang backend. --}}
-    <div class="alert" role="alert">
-        <div class="alert-inner">
-            <strong>Emergency alert</strong>
-            <span>Typhoon Signal No. 2 sa Laguna. Manatili sa loob ng bahay. Hotline: 0917-000-0000.</span>
-        </div>
-    </div>
-@endsection
-
 @section('content')
-    @php
-        $isAdmin = auth()->user()->role->name === 'HOA Admin';
-        $announcements = \App\Models\Announcement::latest()->take(4)->get();
-        $complaints = \App\Models\Complaint::with('user')
-            ->when(! $isAdmin, fn ($q) => $q->where('user_id', auth()->id()))
-            ->latest()
-            ->take(5)
-            ->get();
-        $statusClass = ['Pending' => 's-pending', 'In Progress' => 's-progress', 'Resolved' => 's-done'];
-    @endphp
-
     <div class="intro">
         <h1>Welcome, {{ auth()->user()->name }}</h1>
         <p>Role: {{ auth()->user()->role->name }}. Mga balita at reklamo ng komunidad.</p>
@@ -97,7 +76,7 @@
                         <tr>
                             <td>{{ $complaint->title }}</td>
                             <td>{{ $complaint->user->name }}</td>
-                            <td><span class="status {{ $statusClass[$complaint->status] ?? '' }}">{{ $complaint->status }}</span></td>
+                            <td><span class="status {{ $complaint->statusClass() }}">{{ $complaint->status }}</span></td>
                             <td>{{ $complaint->created_at->format('M d, Y') }}</td>
                             <td><a href="{{ route('complaints.show', $complaint) }}">View</a></td>
                         </tr>
