@@ -10,15 +10,10 @@ class ComplaintController extends Controller
 {
     public function index(Request $request)
     {
-        $user = $request->user();
-
-        $query = Complaint::with('user')->latest();
-
-        if ($user->role->name !== 'HOA Admin') {
-            $query->where('user_id', $user->id);
-        }
-
-        $complaints = $query->get();
+        $complaints = Complaint::with('user')
+            ->visibleTo($request->user())
+            ->latest()
+            ->get();
 
         return view('complaints.index', compact('complaints'));
     }

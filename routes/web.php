@@ -3,6 +3,7 @@
 use App\Http\Controllers\AnnouncementController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ComplaintController;
+use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
@@ -11,9 +12,7 @@ Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
 Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:5,1');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-Route::get('/', function () {
-    return view('home');
-})->middleware('auth');
+Route::get('/', [HomeController::class, 'index'])->middleware('auth');
 
 Route::middleware('auth')->group(function () {
     Route::get('/announcements', [AnnouncementController::class, 'index'])->name('announcements.index');
