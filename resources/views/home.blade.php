@@ -1,16 +1,6 @@
 @extends('layouts.app')
 @section('title', 'Home')
 
-@section('alert')
-    {{-- Placeholder lang ito. Palitan o alisin kapag may emergency alerts na ang backend. --}}
-    <div class="alert" role="alert">
-        <div class="alert-inner">
-            <strong>Emergency alert</strong>
-            <span>Typhoon Signal No. 2 sa Laguna. Manatili sa loob ng bahay. Hotline: 0917-000-0000.</span>
-        </div>
-    </div>
-@endsection
-
 @section('content')
     @php
         $isAdmin = auth()->user()->role->name === 'HOA Admin';
