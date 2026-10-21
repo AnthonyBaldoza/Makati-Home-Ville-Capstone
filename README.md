@@ -10,8 +10,9 @@ A web-based community management system for the Makati Home Ville HOA (Dayap, Ca
 - Three roles: **HOA Admin**, **Resident**, and **Facility Staff**, enforced by route middleware
 - **Announcements:** the Admin creates, edits, and deletes; all logged-in users can read
 - **Complaints:** Residents file complaints and see only their own; the Admin sees all and updates the status (Pending, In Progress, Resolved)
+- **Facility Reservation:** Residents request a facility (such as the Community House) for a date and time. HOA Admin and Facility Staff review the request and set it to Approved or Declined. The system blocks a request that overlaps an Approved reservation.
 
-Planned after the midterm: facility reservation with conflict detection, emergency alerts with SMS, and SMS help requests. The Facility Staff role exists but has no features yet.
+Planned after the midterm: emergency alerts with SMS, and SMS help requests.
 
 ## Requirements
 
@@ -78,6 +79,8 @@ New accounts created through the registration page are always Residents.
 | `users`         | accounts, with a `role_id` foreign key to `roles`, plus block, lot, and mobile number for residents |
 | `announcements` | posted by an Admin (`user_id` foreign key)                                                          |
 | `complaints`    | filed by a Resident (`user_id` foreign key), `status` defaults to Pending                           |
+| `facilities`    | places that can be reserved (name, description)                                                     |
+| `reservations`  | requests made by users (`facility_id` and `user_id` foreign keys), `status` defaults to Pending     |
 
 Design decisions:
 
@@ -86,6 +89,15 @@ Design decisions:
 - **Complaint status is a string**, validated with `Rule::in([...])`, because there are only three fixed values. A lookup table would be more normalized but heavier than needed here.
 - **Block, lot, and mobile number are nullable** because Admin and Staff accounts do not live in a lot. The mobile number is unique because the SMS module will use it to identify who sent a help request.
 - **Profile fields were added in a separate migration** instead of editing the original users migration, so existing databases can be updated without being rebuilt.
+### Facility Reservation
+
+Two tables: `facilities` (id, name, description) and `reservations` (id, facility_id, user_id, reservation_date, start_time, end_time, purpose, status).
+
+- **Foreign keys:** `reservations.facility_id` references `facilities.id`, and `reservations.user_id` references `users.id`, both with `restrictOnDelete`.
+- **CHECK constraints:** `end_time > start_time`, and `status` must be Pending, Approved, or Declined. The database rejects bad data even if the application has a bug.
+- **Conflict check:** a request is rejected if an Approved reservation for the same facility and date overlaps it (`existing.start < new.end AND existing.end > new.start`). Back-to-back bookings, like 10:00-12:00 then 12:00-14:00, are allowed because the comparisons are strict.
+- **Pending vs Approved:** Pending is only a request and does not block the time slot. Approved reserves it. The overlap is checked again when staff approve, because two Pending requests can overlap each other.
+- **Access:** HOA Admin and Facility Staff see all reservations, and other roles only see their own.
 
 ## Security decisions
 
