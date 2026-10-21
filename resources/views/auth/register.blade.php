@@ -30,10 +30,10 @@
             <input type="text" id="mobile_number" name="mobile_number" value="{{ old('mobile_number') }}" required>
 
             <label for="password">Password</label>
-            <input type="password" id="password" name="password" required>
+            <x-password-input id="password" name="password" autocomplete="new-password" />
 
             <label for="password_confirmation">Confirm Password</label>
-            <input type="password" id="password_confirmation" name="password_confirmation" required>
+            <x-password-input id="password_confirmation" name="password_confirmation" autocomplete="new-password" />
 
             <button type="submit" class="btn">Register</button>
         </form>

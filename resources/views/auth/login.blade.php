@@ -18,7 +18,7 @@
             <input type="email" id="email" name="email" value="{{ old('email') }}" required>
 
             <label for="password">Password</label>
-            <input type="password" id="password" name="password" required>
+            <x-password-input id="password" name="password" autocomplete="current-password" />
 
             <button type="submit" class="btn">Login</button>
         </form>
