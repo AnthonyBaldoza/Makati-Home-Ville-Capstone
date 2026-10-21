@@ -4,7 +4,7 @@
 @section('content')
     <div class="intro">
         <h1>Welcome, {{ auth()->user()->name }}</h1>
-        <p>Role: {{ auth()->user()->role->name }}. Mga balita at reklamo ng komunidad.</p>
+        <p>Role: {{ auth()->user()->role->name }}. Community news and complaints.</p>
     </div>
 
     <div class="dash">
@@ -45,7 +45,7 @@
                 @error('title') <p class="error">{{ $message }}</p> @enderror
 
                 <label for="d-description">Description</label>
-                <textarea id="d-description" name="description" rows="4" placeholder="Ilarawan ang problema at saan ito nangyayari">{{ old('description') }}</textarea>
+                <textarea id="d-description" name="description" rows="4" placeholder="Describe the problem and where it happens">{{ old('description') }}</textarea>
                 @error('description') <p class="error">{{ $message }}</p> @enderror
 
                 <button type="submit" class="btn btn-block">Submit complaint</button>
@@ -81,7 +81,7 @@
                             <td><a href="{{ route('complaints.show', $complaint) }}">View</a></td>
                         </tr>
                     @empty
-                        <tr><td colspan="5">Wala pang complaint.</td></tr>
+                        <tr><td colspan="5">No complaints yet.</td></tr>
                     @endforelse
                 </tbody>
             </table>
