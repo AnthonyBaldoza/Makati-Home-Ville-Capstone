@@ -16,7 +16,7 @@ class ReservationController extends Controller
 
         $query = Reservation::with(['facility', 'user'])->latest();
 
-        if ($user->role->name === 'Resident') {
+        if (! in_array($user->role->name, ['HOA Admin', 'Facility Staff'])) {
             $query->where('user_id', $user->id);
         }
 

@@ -10,6 +10,8 @@ class Reservation extends Model
 {
     public const STATUSES = ['Pending', 'Approved', 'Declined'];
 
+    public const BLOCKING_STATUSES = ['Approved'];
+
     protected function casts(): array
     {
         return ['reservation_date' => 'date'];
@@ -24,6 +26,7 @@ class Reservation extends Model
     {
         return $this->belongsTo(User::class);
     }
+
     public function scopeApprovedOverlapping($query, $facilityId, $date, $start, $end)
     {
         return $query->where('facility_id', $facilityId)
@@ -32,6 +35,4 @@ class Reservation extends Model
             ->where('start_time', '<', $end)
             ->where('end_time', '>', $start);
     }
-
 }
-
