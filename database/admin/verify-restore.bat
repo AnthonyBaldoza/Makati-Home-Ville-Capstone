@@ -14,7 +14,7 @@ set FAIL=0
 echo Restore verification: %SRC% vs %DST%
 echo.
 echo Row counts
-for %%T in (roles users announcements complaints complaint_status_history) do (
+for %%T in (roles users announcements complaints complaint_status_history facilities reservations) do (
     for /f %%A in ('psql -h 127.0.0.1 -p 5432 -U postgres -d %SRC% -t -A -c "select count(*) from %%T"') do set "A=%%A"
     for /f %%B in ('psql -h 127.0.0.1 -p 5432 -U postgres -d %DST% -t -A -c "select count(*) from %%T"') do set "B=%%B"
     if "!A!"=="!B!" (
@@ -35,6 +35,12 @@ echo   index complaints_user_id_created_at_index: !C!
 if not "!C!"=="1" set FAIL=1
 for /f %%C in ('psql -h 127.0.0.1 -p 5432 -U postgres -d %DST% -t -A -c "select count(*) from pg_constraint where conname='complaints_status_check'"') do set "C=%%C"
 echo   check constraint complaints_status_check: !C!
+if not "!C!"=="1" set FAIL=1
+for /f %%C in ('psql -h 127.0.0.1 -p 5432 -U postgres -d %DST% -t -A -c "select count(*) from pg_constraint where conname='reservations_time_check'"') do set "C=%%C"
+echo   check constraint reservations_time_check: !C!
+if not "!C!"=="1" set FAIL=1
+for /f %%C in ('psql -h 127.0.0.1 -p 5432 -U postgres -d %DST% -t -A -c "select count(*) from pg_constraint where conname='reservations_status_check'"') do set "C=%%C"
+echo   check constraint reservations_status_check: !C!
 if not "!C!"=="1" set FAIL=1
 
 echo.
