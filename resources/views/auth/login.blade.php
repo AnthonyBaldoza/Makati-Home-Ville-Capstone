@@ -1,5 +1,7 @@
+
 @extends('layouts.app')
 @section('title', 'Login | Makati Home Ville')
+
 @section('content')
     <div class="card auth">
         <h1>Login</h1>
@@ -14,11 +16,31 @@
 
         <form method="POST" action="{{ route('login') }}">
             @csrf
+
             <label for="email">Email</label>
-            <input type="email" id="email" name="email" value="{{ old('email') }}" required>
+            <input
+                type="email"
+                id="email"
+                name="email"
+                value="{{ old('email') }}"
+                autocomplete="username"
+                required
+            >
 
             <label for="password">Password</label>
-            <x-password-input id="password" name="password" autocomplete="current-password" />
+            <x-password-input
+                id="password"
+                name="password"
+                autocomplete="current-password"
+            />
+
+            <label for="role">Login as</label>
+            <select id="role" name="role" required>
+                <option value="">Select your role</option>
+                <option value="HOA Admin" @selected(old('role') === 'HOA Admin')>HOA Admin</option>
+                <option value="Resident" @selected(old('role') === 'Resident')>Resident</option>
+                <option value="Facility Staff" @selected(old('role') === 'Facility Staff')>Facility Staff</option>
+            </select>
 
             <button type="submit" class="btn">Login</button>
         </form>
