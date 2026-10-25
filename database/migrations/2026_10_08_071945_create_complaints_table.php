@@ -12,8 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('complaints', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('user_id')->constrained()->restrictOnDelete();
+            $table->id(); # Primary Key para makroon ng unique identifier
+            $table->foreignId('user_id')->constrained()->restrictOnDelete(); #para malaman kung sino nag sumbit , para hinde mabura pag may user pa
             $table->string('title');
             $table->text('description');
             $table->string('status')->default('Pending');

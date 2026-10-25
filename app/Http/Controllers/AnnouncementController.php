@@ -27,12 +27,13 @@ class AnnouncementController extends Controller
 
     public function store(Request $request)
     {
-        $validated = $request->validate([
+        $validated = $request->validate([ # Para hindi makapag-save ng kulang o maling data. 
             'title' => ['required', 'string', 'max:150'],
             'body' => ['required', 'string'],
         ]);
 
-        $request->user()->announcements()->create($validated);
+        $request->user()->announcements()->create($validated); #Para automatic na ma-assign ang authenticated user bilang author 
+        #ng announcement at magamit ang relationship ng Eloquent.
 
         return redirect()->route('announcements.index')
             ->with('success', 'Announcement posted.');

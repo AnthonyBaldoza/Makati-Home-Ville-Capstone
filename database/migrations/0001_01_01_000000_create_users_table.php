@@ -31,7 +31,7 @@ return new class extends Migration
             $table->string('id')->primary();
             $table->foreignId('user_id')->nullable()->index();
             $table->string('ip_address', 45)->nullable();
-            $table->text('user_agent')->nullable();
+            $table->text('user_agent')->nullable(); # Browser info Chrome,Firefox,Edge
             $table->longText('payload');
             $table->integer('last_activity')->index();
         });
@@ -40,7 +40,7 @@ return new class extends Migration
     /**
      * Reverse the migrations.
      */
-    public function down(): void
+    public function down(): void #Ang down() method ay ginagamit kapag nag-roll back ng migration. Ito ang nag-aalis ng mga table o pagbabago na ginawa ng up() method.
     {
         Schema::dropIfExists('users');
         Schema::dropIfExists('password_reset_tokens');
