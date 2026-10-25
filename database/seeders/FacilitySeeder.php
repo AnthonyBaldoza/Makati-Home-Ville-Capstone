@@ -9,7 +9,7 @@ class FacilitySeeder extends Seeder
 {
     public function run(): void
     {
-        Facility::firstOrCreate(
+        Facility::firstOrCreate( #Naglalagay ng default facilities sa database.
             ['name' => 'Community House'],
             ['description' => 'Community houses for residents']
         );

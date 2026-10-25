@@ -19,7 +19,7 @@ class DatabaseSeeder extends Seeder
         $this->call(RoleSeeder::class);
         $this->call(FacilitySeeder::class);
 
-        $admin = User::factory()->create([
+        $admin = User::factory()->create([ #Fact0ry para mas pabilis ang at consistent and paggawa ng demo account 
             'name' => 'HOA Admin',
             'email' => 'admin@mhv.test',
             'password' => 'admin12345',
