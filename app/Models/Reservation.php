@@ -12,7 +12,7 @@ class Reservation extends Model
 
     public const BLOCKING_STATUSES = ['Approved'];
 
-    protected function casts(): array
+    protected function casts(): array #gumagamit ng cast para automatic na i convert and reservation _date sa date object
     {
         return ['reservation_date' => 'date'];
     }
