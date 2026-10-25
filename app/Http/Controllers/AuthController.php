@@ -6,39 +6,62 @@ use App\Models\Role;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
 
 class AuthController extends Controller
 {
     public function showRegister()
     {
-        return view('auth.register');
+        $roles = Role::orderBy('name')->pluck('name');
+
+        return view('auth.register', compact('roles'));
     }
 
     public function register(Request $request)
     {
         $validated = $request->validate([
+            'role' => ['required', Rule::exists('roles', 'name')],
             'name' => ['required', 'string', 'max:50'],
             'email' => ['required', 'email', 'unique:users,email'],
-            'block' => ['required', 'string', 'max:50'],
-            'lot' => ['required', 'string', 'max:50'],
+            'block' => ['required_if:role,Resident', 'nullable', 'string', 'max:50'],
+            'lot' => ['required_if:role,Resident', 'nullable', 'string', 'max:50'],
             'mobile_number' => [
                 'required',
                 'regex:/^09\d{9}$/',
                 'unique:users,mobile_number',
             ],
             'password' => ['required', 'min:8', 'confirmed'],
+            'access_code' => ['nullable', 'string'],
         ]);
 
-        // All newly registered accounts are Residents.
-        $validated['role_id'] = Role::where('name', 'Resident')->value('id');
+        // Resident: walang code. Staff at Admin: kailangan ng tamang code mula sa HOA.
+        if ($validated['role'] !== 'Resident') {
+            $expected = config('hoa.codes.'.$validated['role']);
 
-        if (!$validated['role_id']) {
-            return back()->withErrors([
-                'email' => 'Registration is currently unavailable. Please contact the administrator.',
-            ])->withInput($request->except('password', 'password_confirmation'));
+            if (! $expected || ! hash_equals($expected, (string) $request->access_code)) {
+                return back()
+                    ->withErrors(['access_code' => 'Invalid access code for this role.'])
+                    ->withInput($request->only('role', 'name', 'email', 'block', 'lot', 'mobile_number'));
+            }
         }
 
-        $user = User::create($validated);
+        $roleId = Role::where('name', $validated['role'])->value('id');
+
+        if (! $roleId) {
+            return back()->withErrors([
+                'email' => 'Registration is currently unavailable. Please contact the administrator.',
+            ])->withInput($request->only('role', 'name', 'email', 'block', 'lot', 'mobile_number'));
+        }
+
+        $user = User::create([
+            'name' => $validated['name'],
+            'email' => $validated['email'],
+            'block' => $validated['block'] ?? null,
+            'lot' => $validated['lot'] ?? null,
+            'mobile_number' => $validated['mobile_number'],
+            'password' => $validated['password'],
+            'role_id' => $roleId,
+        ]);
 
         Auth::login($user);
         $request->session()->regenerate();
@@ -56,41 +79,25 @@ class AuthController extends Controller
         $validated = $request->validate([
             'email' => ['required', 'email'],
             'password' => ['required'],
-            'role' => [
-                'required',
-                'string',
-                'in:HOA Admin,Resident,Facility Staff',
-            ],
+            'role' => ['required', 'string'],
         ]);
 
-        $credentials = [
+        $roleId = Role::where('name', $validated['role'])->value('id');
+
+        // Kasama ang role_id sa tseke: papasok lang kung tugma ang email, password, AT role.
+        if ($roleId && Auth::attempt([
             'email' => $validated['email'],
             'password' => $validated['password'],
-        ];
-
-        if (Auth::attempt($credentials)) {
-            $user = Auth::user();
-
-            // The selected role must match the account's database role.
-            if ($user->role?->name !== $validated['role']) {
-                Auth::logout();
-
-                return back()
-                    ->withErrors([
-                        'role' => 'The selected role does not match your account.',
-                    ])
-                    ->withInput($request->only('email', 'role'));
-            }
-
+            'role_id' => $roleId,
+        ])) {
             $request->session()->regenerate();
 
             return redirect('/');
         }
 
+        // Iisang mensahe para hindi malaman kung alin ang mali.
         return back()
-            ->withErrors([
-                'email' => 'Invalid email or password.',
-            ])
+            ->withErrors(['email' => 'Invalid email, password, or role.'])
             ->withInput($request->only('email', 'role'));
     }
 
