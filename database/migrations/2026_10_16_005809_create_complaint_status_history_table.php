@@ -10,11 +10,11 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('complaint_status_history', function (Blueprint $table) {
-            $table->id();
+            $table->id(); #primary  
             $table->foreignId('complaint_id')->constrained()->restrictOnDelete();
             $table->string('old_status');
             $table->string('new_status');
-            $table->string('db_user');
+            $table->string('db_user'); #sinong database account ang nagbabago
             $table->timestamp('changed_at')->useCurrent();
         });
 
