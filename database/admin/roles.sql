@@ -36,7 +36,7 @@ ALTER DEFAULT PRIVILEGES IN SCHEMA public
 REVOKE ALL ON migrations FROM mhv_app;
 
 -- 4. mhv_readonly: reporting only, and it cannot see password hashes ------
-GRANT SELECT ON roles, announcements, complaints TO mhv_readonly;
+GRANT SELECT ON roles, announcements, complaints TO mhv_readonly; -- can see but can't edit--
 GRANT SELECT (id, name, email, block, lot, mobile_number, role_id, created_at, updated_at)
     ON users TO mhv_readonly;
 

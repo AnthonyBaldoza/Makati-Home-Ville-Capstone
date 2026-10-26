@@ -39,7 +39,7 @@
             <input type="text" id="mobile_number" name="mobile_number" value="{{ old('mobile_number') }}" required>
 
             <div id="code-field" hidden>
-                <label for="access_code">Access code (galing sa HOA)</label>
+                <label for="access_code">Access code (From the HOA)</label>
                 <input type="password" id="access_code" name="access_code" autocomplete="off">
             </div>
 

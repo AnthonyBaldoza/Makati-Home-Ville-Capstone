@@ -28,7 +28,8 @@
             >
 
             <label for="password">Password</label>
-            <x-password-input
+            <!-- Upang maging reusable ang password field sa iba't ibang pages -->
+            <x-password-input 
                 id="password"
                 name="password"
                 autocomplete="current-password"
