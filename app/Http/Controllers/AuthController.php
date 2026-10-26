@@ -20,7 +20,7 @@ class AuthController extends Controller
     public function register(Request $request)
     {
         $validated = $request->validate([
-            'role' => ['required', Rule::exists('roles', 'name')],
+            'role' => ['required', Rule::exists('roles', 'name')], 
             'name' => ['required', 'string', 'max:50'],
             'email' => ['required', 'email', 'unique:users,email'],
             'block' => ['required_if:role,Resident', 'nullable', 'string', 'max:50'],
@@ -63,10 +63,10 @@ class AuthController extends Controller
             'role_id' => $roleId,
         ]);
 
-        Auth::login($user);
-        $request->session()->regenerate();
+        Auth::login($user); #automatic na ni la-log in yung user after registration
+        $request->session()->regenerate(); 
 
-        return redirect('/');
+        return redirect('/'); #dashboard
     }
 
     public function showLogin()
@@ -82,7 +82,7 @@ class AuthController extends Controller
             'role' => ['required', 'string'],
         ]);
 
-        $roleId = Role::where('name', $validated['role'])->value('id');
+        $roleId = Role::where('name', $validated['role'])->value('id'); # nag lalagay ng role id 
 
         // Kasama ang role_id sa tseke: papasok lang kung tugma ang email, password, AT role.
         if ($roleId && Auth::attempt([
@@ -98,7 +98,7 @@ class AuthController extends Controller
         // Iisang mensahe para hindi malaman kung alin ang mali.
         return back()
             ->withErrors(['email' => 'Invalid email, password, or role.'])
-            ->withInput($request->only('email', 'role'));
+            ->withInput($request->only('email', 'role')); 
     }
 
     public function logout(Request $request)
