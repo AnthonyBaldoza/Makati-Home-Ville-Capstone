@@ -12,7 +12,7 @@ class Reservation extends Model
 
     public const BLOCKING_STATUSES = ['Approved'];
 
-    protected function casts(): array #gumagamit ng cast para automatic na i convert and reservation _date sa date object
+    protected function casts(): array #gumagamit ng cast para automatic na i convert ang reservation _date sa date object
     {
         return ['reservation_date' => 'date'];
     }
@@ -27,7 +27,7 @@ class Reservation extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function scopeApprovedOverlapping($query, $facilityId, $date, $start, $end)
+    public function scopeApprovedOverlapping($query, $facilityId, $date, $start, $end) # reusable query logic
     {
         return $query->where('facility_id', $facilityId)
             ->whereDate('reservation_date', $date)
