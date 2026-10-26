@@ -12,7 +12,7 @@ class AnnouncementController extends Controller
      */
     public function index()
     {
-        $announcements = Announcement::with('user')->latest()->get();
+        $announcements = Announcement::with('user')->latest()->get(); # To avoid N+1 Query Problem
 
         return view('announcements.index', compact('announcements'));
     }
@@ -33,7 +33,7 @@ class AnnouncementController extends Controller
         ]);
 
         $request->user()->announcements()->create($validated); #Para automatic na ma-assign ang authenticated user bilang author 
-        #ng announcement at magamit ang relationship ng Eloquent.
+        #ng announcement.
 
         return redirect()->route('announcements.index')
             ->with('success', 'Announcement posted.');
@@ -44,7 +44,7 @@ class AnnouncementController extends Controller
      */
     public function show(Announcement $announcement)
     {
-        return view('announcements.show', compact('announcement'));
+        return view('announcements.show', compact('announcement')); #specified anouncement
     }
 
     public function edit(Announcement $announcement)
@@ -59,7 +59,7 @@ class AnnouncementController extends Controller
             'body' => ['required', 'string'],
         ]);
 
-        $announcement->update($validated);
+        $announcement->update($validated); #get new values
 
         return redirect()->route('announcements.show', $announcement)
             ->with('success', 'Announcement updated.');
