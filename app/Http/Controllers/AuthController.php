@@ -12,16 +12,16 @@ class AuthController extends Controller
 {
     public function showRegister()
     {
-        $roles = Role::orderBy('name')->pluck('name');
+        $roles = Role::orderBy('name')->pluck('name'); 
 
-        return view('auth.register', compact('roles'));
+        return view('auth.register', compact('roles')); 
     }
 
     public function register(Request $request)
     {
-        $validated = $request->validate([
+        $validated = $request->validate([ # to check data before saving into the database 
             'role' => ['required', Rule::exists('roles', 'name')], 
-            'name' => ['required', 'string', 'max:50'],
+            'name' => ['required', 'string', 'max:50'], 
             'email' => ['required', 'email', 'unique:users,email'],
             'block' => ['required_if:role,Resident', 'nullable', 'string', 'max:50'],
             'lot' => ['required_if:role,Resident', 'nullable', 'string', 'max:50'],
@@ -45,10 +45,10 @@ class AuthController extends Controller
             }
         }
 
-        $roleId = Role::where('name', $validated['role'])->value('id');
+        $roleId = Role::where('name', $validated['role'])->value('id'); 
 
         if (! $roleId) {
-            return back()->withErrors([
+            return back()->withErrors([ 
                 'email' => 'Registration is currently unavailable. Please contact the administrator.',
             ])->withInput($request->only('role', 'name', 'email', 'block', 'lot', 'mobile_number'));
         }
@@ -56,7 +56,7 @@ class AuthController extends Controller
         $user = User::create([
             'name' => $validated['name'],
             'email' => $validated['email'],
-            'block' => $validated['block'] ?? null,
+            'block' => $validated['block'] ?? null, 
             'lot' => $validated['lot'] ?? null,
             'mobile_number' => $validated['mobile_number'],
             'password' => $validated['password'],
@@ -79,7 +79,7 @@ class AuthController extends Controller
         $validated = $request->validate([
             'email' => ['required', 'email'],
             'password' => ['required'],
-            'role' => ['required', 'string'],
+            'role' => ['required', 'string'], 
         ]);
 
         $roleId = Role::where('name', $validated['role'])->value('id'); # nag lalagay ng role id 
