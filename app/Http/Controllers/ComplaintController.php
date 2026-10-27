@@ -10,12 +10,12 @@ class ComplaintController extends Controller
 {
     public function index(Request $request)
     {
-        $complaints = Complaint::with('user')
+        $complaints = Complaint::with('user') #To show the complaint in order with the latest first and with the name of the user
             ->visibleTo($request->user())
             ->latest()
             ->get();
 
-        return view('complaints.index', compact('complaints'));
+        return view('complaints.index', compact('complaints')); 
     }
 
     public function create()
