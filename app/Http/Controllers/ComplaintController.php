@@ -15,7 +15,7 @@ class ComplaintController extends Controller
             ->latest()
             ->get();
 
-        return view('complaints.index', compact('complaints')); 
+        return view('complaints.index', compact('complaints')); # return the complaints view 
     }
 
     public function create()
