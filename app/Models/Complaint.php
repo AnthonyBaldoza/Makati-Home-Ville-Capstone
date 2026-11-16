@@ -15,6 +15,11 @@ class Complaint extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function attachments()
+    {
+        return $this->hasMany(Attachment::class);
+    }
+
     public function scopeVisibleTo($query, User $user)
     {
         return $user->role->name === 'HOA Admin' ? $query : $query->where('user_id', $user->id);

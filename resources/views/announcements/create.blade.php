@@ -12,13 +12,16 @@
             </ul>
         @endif
 
-        <form method="POST" action="{{ route('announcements.store') }}">
+        <form method="POST" action="{{ route('announcements.store') }}" enctype="multipart/form-data">
             @csrf
             <label for="title">Title</label>
             <input type="text" id="title" name="title" value="{{ old('title') }}" required>
 
             <label for="body">Body</label>
             <textarea id="body" name="body" rows="6" required>{{ old('body') }}</textarea>
+
+            <label for="media">Photos or videos (optional, up to 5, 20 MB each)</label>
+            <input type="file" id="media" name="media[]" accept="image/*,video/*" multiple>
 
             <div class="actions">
                 <button type="submit" class="btn">Post</button>

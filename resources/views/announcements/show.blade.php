@@ -6,6 +6,18 @@
         <small class="meta">By {{ $announcement->user->name }} on {{ $announcement->created_at->format('M d, Y') }}</small>
         <p>{{ $announcement->body }}</p>
 
+        @if ($announcement->attachments->isNotEmpty())
+            <div class="attachments">
+                @foreach ($announcement->attachments as $file)
+                    @if ($file->isVideo())
+                        <video controls preload="metadata" src="{{ route('attachments.show', $file) }}"></video>
+                    @else
+                        <img src="{{ route('attachments.show', $file) }}" alt="{{ $file->original_name }}" loading="lazy">
+                    @endif
+                @endforeach
+            </div>
+        @endif
+
         @if (auth()->user()->role->name === 'HOA Admin')
             <div class="actions">
                 <a class="btn" href="{{ route('announcements.edit', $announcement) }}">Edit</a>
