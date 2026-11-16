@@ -7,6 +7,18 @@
         <p><strong>Date:</strong> {{ $complaint->created_at->format('M d, Y') }}</p>
         <p><strong>Status:</strong> <span class="badge">{{ $complaint->status }}</span></p>
         <p>{{ $complaint->description }}</p>
+
+        @if ($complaint->attachments->isNotEmpty())
+            <div class="attachments">
+                @foreach ($complaint->attachments as $file)
+                    @if ($file->isVideo())
+                        <video controls preload="metadata" src="{{ route('attachments.show', $file) }}"></video>
+                    @else
+                        <img src="{{ route('attachments.show', $file) }}" alt="{{ $file->original_name }}" loading="lazy">
+                    @endif
+                @endforeach
+            </div>
+        @endif
     </div>
 
     @if (auth()->user()->role->name === 'HOA Admin')

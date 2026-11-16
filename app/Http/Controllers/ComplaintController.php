@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Complaint;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 
 class ComplaintController extends Controller
@@ -28,9 +30,27 @@ class ComplaintController extends Controller
         $validated = $request->validate([
             'title' => ['required', 'string', 'max:255'],
             'description' => ['required', 'string'],
+            'media' => ['nullable', 'array', 'max:5'],
+            'media.*' => [
+                'file',
+                'mimetypes:image/jpeg,image/png,image/webp,video/mp4,video/webm,video/quicktime',
+                'max:20480', // 20 MB per file
+            ],
         ]);
 
-        $request->user()->complaints()->create($validated);
+        DB::transaction(function () use ($request, $validated) {
+            $complaint = $request->user()->complaints()
+                ->create(Arr::only($validated, ['title', 'description']));
+
+            foreach ($request->file('media', []) as $file) {
+                $complaint->attachments()->create([
+                    'path' => $file->store("complaints/{$complaint->id}", 'local'),
+                    'original_name' => $file->getClientOriginalName(),
+                    'mime_type' => $file->getMimeType(),
+                    'size' => $file->getSize(),
+                ]);
+            }
+        });
 
         return redirect()->route('complaints.index')
             ->with('success', 'Complaint submitted.');
@@ -44,7 +64,7 @@ class ComplaintController extends Controller
             abort(403);
         }
 
-        $complaint->load('user');
+        $complaint->load(['user', 'attachments']);
 
         return view('complaints.show', compact('complaint'));
     }
