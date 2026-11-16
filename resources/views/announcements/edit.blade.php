@@ -12,7 +12,7 @@
             </ul>
         @endif
 
-        <form method="POST" action="{{ route('announcements.update', $announcement) }}">
+        <form method="POST" action="{{ route('announcements.update', $announcement) }}" enctype="multipart/form-data">
             @csrf
             @method('PUT')
 
@@ -21,6 +21,28 @@
 
             <label for="body">Body</label>
             <textarea id="body" name="body" rows="6" required>{{ old('body', $announcement->body) }}</textarea>
+
+            @if ($announcement->attachments->isNotEmpty())
+                <p><strong>Current attachments</strong> (check to remove)</p>
+                <div class="attachments">
+                    @foreach ($announcement->attachments as $file)
+                        <label class="attachment-item">
+                            @if ($file->isVideo())
+                                <video controls preload="metadata" src="{{ route('attachments.show', $file) }}"></video>
+                            @else
+                                <img src="{{ route('attachments.show', $file) }}" alt="{{ $file->original_name }}" loading="lazy">
+                            @endif
+                            <span>
+                                <input type="checkbox" name="remove_media[]" value="{{ $file->id }}">
+                                Remove {{ $file->original_name }}
+                            </span>
+                        </label>
+                    @endforeach
+                </div>
+            @endif
+
+            <label for="media">Add photos or videos (optional, up to 5, 20 MB each)</label>
+            <input type="file" id="media" name="media[]" accept="image/*,video/*" multiple>
 
             <div class="actions">
                 <button type="submit" class="btn">Update</button>
