@@ -7,3 +7,6 @@
     --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
         'Segoe UI Symbol', 'Noto Color Emoji';
 }
+.attachments { display: grid; gap: 12px; margin-top: 12px; }
+.attachments img, .attachments video { max-width: 100%; border-radius: 6px; }
+.attachment-item { display: flex; flex-direction: column; gap: 6px; }
