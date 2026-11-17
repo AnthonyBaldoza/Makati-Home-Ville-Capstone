@@ -12,6 +12,10 @@ class HomeController extends Controller
     {
         $user = $request->user();
 
+        if (auth()->guest()) {
+    return view('welcome');
+}
+
         $isAdmin = $user->role->name === 'HOA Admin';
         $announcements = Announcement::latest()->take(4)->get();
         $complaints = Complaint::with('user')
