@@ -6,9 +6,9 @@
 <style>
 
   :root {
-  --mhv-primary: #1f4d3a;
+  --mhv-primary: #1f4d3a;       
   --mhv-primary-dark: #163a2b;
-  --mhv-bg: #ecf0eb;
+  --mhv-bg: #ecf0eb;           
   --mhv-card: #ffffff;
   --mhv-text: #111111;
   --mhv-border: #d5dcd6;
@@ -40,6 +40,10 @@
   .fc { --fc-button-bg-color: var(--mhv-primary); --fc-button-border-color: var(--mhv-primary);
         --fc-button-hover-bg-color: var(--mhv-primary-dark); --fc-button-active-bg-color: var(--mhv-primary-dark);
         --fc-today-bg-color: #eaf1fb; }
+     .fc .fc-daygrid-event { padding: 2px 4px; border-radius: 6px; white-space: normal; }
+  .fc .fc-daygrid-event,
+  .fc .fc-daygrid-event .fc-event-time,
+  .fc .fc-daygrid-event .fc-event-title { color: #fff; font-size: 12px; }
 
   /* Modal */
   .ce-modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.45); z-index: 9999; align-items: center; justify-content: center; padding: 16px; }
@@ -90,7 +94,7 @@
     <label>Start</label>
     <input type="datetime-local" id="evStart">
 
-    <label>End (optional)</label>
+   <label>End</label>
     <input type="datetime-local" id="evEnd">
 
     <label>Location</label>
@@ -150,7 +154,9 @@ async function send(url, method, body) {
 }
 
 const calendar = new FullCalendar.Calendar($('calendar'), {
-  initialView: window.innerWidth < 700 ? 'listMonth' : 'dayGridMonth',
+    initialView: window.innerWidth < 700 ? 'listMonth' : 'dayGridMonth',
+  eventDisplay: 'block',
+  displayEventEnd: true,
   height: 'auto',
   headerToolbar: { left: 'prev,next today', center: 'title', right: 'dayGridMonth,listMonth' },
   buttonText: { today: 'Today', month: 'Calendar', list: 'List' },
@@ -166,9 +172,10 @@ const calendar = new FullCalendar.Calendar($('calendar'), {
       location: p.location || '', desc: p.description || '',
     });
   },
-  dateClick(info) {
+    dateClick(info) {
     if (!CAN_MANAGE) return;
-    openModal({ start: info.dateStr.slice(0, 10) + 'T09:00' });
+    const day = info.dateStr.slice(0, 10);
+    openModal({ start: day + 'T09:00', end: day + 'T10:00' });
   },
 });
 calendar.render();
@@ -181,7 +188,7 @@ if (CAN_MANAGE) {
     const id = $('evId').value;
     const body = {
       title: $('evTitle').value, type: $('evType').value,
-      start_at: $('evStart').value, end_at: $('evEnd').value || null,
+            start_at: $('evStart').value, end_at: $('evEnd').value,
       location: $('evLocation').value, description: $('evDesc').value,
     };
     try {

@@ -4,13 +4,16 @@ namespace App\Http\Controllers;
 
 use App\Models\CommunityEvent;
 use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
 
 class CommunityEventController extends Controller
 {
-    // ⚠️ PALITAN kung iba ang role names sa users table ninyo
+    // Sino ang pwedeng mag-add/edit/delete ng events
     private function canManage(): bool
     {
-        return in_array(auth()->user()->role, ['hoa', 'facility_staff']);
+        $roleName = auth()->user()->role->name ?? '';
+
+        return in_array($roleName, ['HOA Admin', 'Facility Staff'], true);
     }
 
     private function rules(): array
@@ -21,10 +24,28 @@ class CommunityEventController extends Controller
             'description' => 'nullable|string|max:1000',
             'location'    => 'nullable|string|max:150',
             'start_at'    => 'required|date',
-            'end_at'      => 'nullable|date|after_or_equal:start_at',
+            'end_at'      => 'required|date|after:start_at',
         ];
     }
 
+    // Bawal ang overlapping na schedule
+    private function assertNoOverlap(array $data, $ignoreId = null): void
+    {
+        $conflict = CommunityEvent::findConflict($data['start_at'], $data['end_at'], $ignoreId);
+
+        if ($conflict) {
+            throw ValidationException::withMessages([
+                'start_at' => sprintf(
+                    'May schedule conflict: "%s" (%s - %s). Pumili ng ibang oras.',
+                    $conflict->title,
+                    $conflict->start_at->format('M j, g:i A'),
+                    optional($conflict->end_at)->format('M j, g:i A') ?? 'no end time'
+                ),
+            ]);
+        }
+    }
+
+    // Page ng calendar (lahat ng naka-login ay makakakita)
     public function index()
     {
         return view('community-events.index', [
@@ -32,7 +53,7 @@ class CommunityEventController extends Controller
         ]);
     }
 
-    // JSON para sa calendar
+    // JSON data para sa calendar
     public function feed()
     {
         return CommunityEvent::orderBy('start_at')->get()->map(fn ($e) => [
@@ -49,29 +70,39 @@ class CommunityEventController extends Controller
         ]);
     }
 
+    // ADD: HOA Admin / Facility Staff lang
     public function store(Request $request)
     {
         abort_unless($this->canManage(), 403);
 
         $data = $request->validate($this->rules());
+        $this->assertNoOverlap($data);
+
         $data['created_by'] = auth()->id();
 
         return CommunityEvent::create($data);
     }
 
+    // EDIT: HOA Admin / Facility Staff lang
     public function update(Request $request, CommunityEvent $event)
     {
         abort_unless($this->canManage(), 403);
 
-        $event->update($request->validate($this->rules()));
+        $data = $request->validate($this->rules());
+        $this->assertNoOverlap($data, $event->id); // huwag i-count ang sarili
+
+        $event->update($data);
+
         return $event;
     }
 
+    // DELETE: HOA Admin / Facility Staff lang
     public function destroy(CommunityEvent $event)
     {
         abort_unless($this->canManage(), 403);
 
         $event->delete();
+
         return response()->noContent();
     }
 }
