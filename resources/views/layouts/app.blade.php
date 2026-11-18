@@ -18,6 +18,7 @@
                     <a href="{{ route('announcements.index') }}">Announcements</a>
                     <a href="{{ route('complaints.index') }}">Complaints</a>
                     <a href="{{ route('reservations.index') }}">Reservations</a>
+                    <a href="{{ route('community-events.index') }}">Events</a>
                 </nav>
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf

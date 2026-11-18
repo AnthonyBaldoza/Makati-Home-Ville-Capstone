@@ -4,20 +4,20 @@
 <meta name="csrf-token" content="{{ csrf_token() }}">
 
 <style>
-  /* ⚠️ Palitan ng colors ng system theme ninyo (kopyahin sa main CSS) */
-  :root {
-    --mhv-primary: #1e5aa8;
-    --mhv-primary-dark: #14407a;
-    --mhv-bg: #f5f7fb;
-    --mhv-card: #ffffff;
-    --mhv-text: #1f2937;
-    --mhv-border: #e2e8f0;
 
-    --c-meeting:  #1e5aa8;
-    --c-cleanup:  #2e9e5b;
-    --c-seminar:  #e08a1e;
-    --c-barangay: #8e44ad;
-  }
+  :root {
+  --mhv-primary: #1f4d3a;
+  --mhv-primary-dark: #163a2b;
+  --mhv-bg: #ecf0eb;
+  --mhv-card: #ffffff;
+  --mhv-text: #111111;
+  --mhv-border: #d5dcd6;
+
+  --c-meeting:  #1f4d3a;
+  --c-cleanup:  #2e9e5b;
+  --c-seminar:  #c98a1b;
+  --c-barangay: #3b6ea5;
+}
 
   .ce-wrap { background: var(--mhv-bg); padding: 20px; border-radius: 12px; color: var(--mhv-text); }
   .ce-head { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 14px; }
