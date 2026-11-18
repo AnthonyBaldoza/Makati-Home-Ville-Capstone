@@ -8,6 +8,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PasswordResetController;
 use App\Http\Controllers\ReservationController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\CommunityEventController;
 
 Route::middleware('auth')->group(function () {
     Route::get('/reservations', [ReservationController::class, 'index'])->name('reservations.index');
@@ -56,3 +57,11 @@ Route::get('/forgot-password', [PasswordResetController::class, 'showForgot'])->
 Route::post('/forgot-password', [PasswordResetController::class, 'sendLink'])->middleware('throttle:5,1')->name('password.email');
 Route::get('/reset-password/{token}', [PasswordResetController::class, 'showReset'])->name('password.reset');
 Route::post('/reset-password', [PasswordResetController::class, 'reset'])->middleware('throttle:5,1')->name('password.update');
+
+Route::middleware('auth')->group(function () {
+    Route::get('/community-events', [CommunityEventController::class, 'index'])->name('community-events.index');
+    Route::get('/community-events/feed', [CommunityEventController::class, 'feed'])->name('community-events.feed');
+    Route::post('/community-events', [CommunityEventController::class, 'store']);
+    Route::put('/community-events/{event}', [CommunityEventController::class, 'update']);
+    Route::delete('/community-events/{event}', [CommunityEventController::class, 'destroy']);
+});
