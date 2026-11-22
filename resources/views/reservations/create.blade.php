@@ -1,3 +1,6 @@
+@if ($errors->any())
+    <p class="error">{{ $errors->first() }}</p>
+@endif
 @extends('layouts.app')
 @section('title', 'Reserve a Facility')
 @section('content')

@@ -4,6 +4,7 @@
     <div class="card">
         <h1>Facility Reservations</h1>
         <a class="btn" href="{{ route('reservations.create') }}">Reserve a facility</a>
+        <a class="btn btn-outline" href="{{ route('reservations.calendar') }}">View calendar</a>
     </div>
 
     @if ($errors->any())
@@ -36,19 +37,8 @@
                     <td>{{ $reservation->purpose }}</td>
                     <td><span class="badge">{{ $reservation->status }}</span></td>
                     <td>
-                        @if (auth()->user()->role->name === 'Facility Staff' && $reservation->status === 'Pending')
-                            <form method="POST" action="{{ route('reservations.status', $reservation) }}" style="display:inline">
-                                @csrf
-                                @method('PUT')
-                                <input type="hidden" name="status" value="Approved">
-                                <button type="submit" class="btn">Approve</button>
-                            </form>
-                            <form method="POST" action="{{ route('reservations.status', $reservation) }}" style="display:inline">
-                                @csrf
-                                @method('PUT')
-                                <input type="hidden" name="status" value="Declined">
-                                <button type="submit" class="btn btn-outline">Decline</button>
-                            </form>
+                        @if (in_array(auth()->user()->role->name, ['Facility Staff', 'HOA Admin']) && $reservation->status === 'Pending')
+                            <a href="{{ route('reservations.calendar') }}" class="btn">Review sa calendar</a>
                         @endif
                     </td>
                 </tr>
