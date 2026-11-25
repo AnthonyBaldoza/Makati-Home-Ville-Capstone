@@ -20,11 +20,16 @@
                     <a href="{{ route('reservations.index') }}">Reservations</a>
                     <a href="{{ route('community-events.index') }}">Events</a>
                 </nav>
-                <form method="POST" action="{{ route('logout') }}">
-                    @csrf
-                    <span class="who">{{ auth()->user()->name }} ({{ auth()->user()->role->name }})</span>
-                    <button type="submit" class="btn btn-outline">Logout</button>
-                </form>
+                <div class="topbar-user">
+                    <a class="profile-link" href="{{ route('profile.edit') }}" aria-label="My profile: {{ auth()->user()->name }}">
+                        <x-avatar :user="auth()->user()" size="sm" />
+                        <span class="who">{{ auth()->user()->name }} ({{ auth()->user()->role->name }})</span>
+                    </a>
+                    <form method="POST" action="{{ route('logout') }}">
+                        @csrf
+                        <button type="submit" class="btn btn-outline btn-sm">Logout</button>
+                    </form>
+                </div>
             @endauth
         </div>
     </header>

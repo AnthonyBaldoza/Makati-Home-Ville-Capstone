@@ -7,6 +7,7 @@ use App\Http\Controllers\CommunityEventController;
 use App\Http\Controllers\ComplaintController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PasswordResetController;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ReservationCalendarController;
 use App\Http\Controllers\ReservationChatController;
 use App\Http\Controllers\ReservationController;
@@ -67,6 +68,13 @@ Route::get('/forgot-password', [PasswordResetController::class, 'showForgot'])->
 Route::post('/forgot-password', [PasswordResetController::class, 'sendLink'])->middleware('throttle:5,1')->name('password.email');
 Route::get('/reset-password/{token}', [PasswordResetController::class, 'showReset'])->name('password.reset');
 Route::post('/reset-password', [PasswordResetController::class, 'reset'])->middleware('throttle:5,1')->name('password.update');
+
+// ---------------- Profile ----------------
+Route::middleware('auth')->group(function () {
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::get('/avatars/{user}', [ProfileController::class, 'avatar'])->name('avatars.show');
+});
 
 // ---------------- Community Events ----------------
 Route::middleware('auth')->group(function () {
