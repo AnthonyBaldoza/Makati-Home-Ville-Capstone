@@ -47,10 +47,10 @@ textarea:focus-visible {
     align-items: center;
     gap: 16px;
     flex-wrap: wrap;
-    max-width: 1080px;
+    max-width: none; /* full width: brand on the left edge, profile and logout on the right edge */
     min-height: 64px;
     margin: 0 auto;
-    padding: 0 16px;
+    padding: 0 28px;
 }
 .topbar a {
     color: #fff;
