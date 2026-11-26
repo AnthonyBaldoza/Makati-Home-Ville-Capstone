@@ -13,11 +13,11 @@ use Illuminate\Validation\ValidationException;
 
 class ReservationCalendarController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         return view('reservations.calendar', [
             'facilities' => Facility::orderBy('name')->get(['id', 'name']),
-            'isStaff' => SlotRules::isStaff(auth()->user()),
+            'isStaff' => SlotRules::isStaff($request->user()),
         ]);
     }
 
@@ -93,7 +93,7 @@ class ReservationCalendarController extends Controller
     public function store(Request $request)
     {
         $data = $this->validated($request, null);
-        $user = auth()->user();
+        $user = $request->user();
 
         $r = new Reservation();
         $r->facility_id = $data['facility_id'];
@@ -111,7 +111,7 @@ class ReservationCalendarController extends Controller
 
     public function update(Request $request, Reservation $reservation)
     {
-        $user = auth()->user();
+        $user = $request->user();
 
         if ($reservation->user_id !== $user->id) {
             abort(403, 'Hindi mo pwedeng i-edit ang reservation ng ibang tao. Approve o Decline lang ang pwede.');
@@ -132,20 +132,20 @@ class ReservationCalendarController extends Controller
         return response()->json(['ok' => true, 'message' => 'Na-update ang reservation.']);
     }
 
-    public function destroy(Reservation $reservation)
+    public function destroy(Request $request, Reservation $reservation)
     {
-        if ($reservation->user_id !== auth()->id()) {
+        if ($reservation->user_id !== $request->user()->id) {
             abort(403, 'Hindi mo pwedeng burahin ang reservation ng ibang tao.');
         }
 
-        $reservation->delete();
+        $reservation->delete();     
 
         return response()->json(['ok' => true, 'message' => 'Nabura ang reservation.']);
     }
 
     public function review(Request $request, Reservation $reservation)
     {
-        $user = auth()->user();
+        $user = $request->user();
 
         if (! SlotRules::isStaff($user)) {
             abort(403, 'Para lang sa HOA/Staff ang Approve at Decline.');
