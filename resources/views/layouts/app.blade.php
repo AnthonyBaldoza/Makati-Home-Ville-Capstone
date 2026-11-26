@@ -21,6 +21,7 @@
                     <a href="{{ route('community-events.index') }}">Events</a>
                 </nav>
                 <div class="topbar-user">
+                    <x-notification-bell />
                     <a class="profile-link" href="{{ route('profile.edit') }}" aria-label="My profile: {{ auth()->user()->name }}">
                         <x-avatar :user="auth()->user()" size="sm" />
                         <span class="who">{{ auth()->user()->name }} ({{ auth()->user()->role->name }})</span>

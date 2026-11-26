@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Facility;
 use App\Models\Reservation;
 use App\Models\ReservationChatMessage;
+use App\Notifications\ReservationReviewed;
 use App\Support\SlotRules;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -188,6 +189,8 @@ class ReservationCalendarController extends Controller
             'sender_id' => $user->id,
             'body' => $chatBody,
         ]);
+
+        $reservation->user->notify(new ReservationReviewed($reservation));
 
         return response()->json(['ok' => true, 'message' => 'Na-update ang status.']);
     }

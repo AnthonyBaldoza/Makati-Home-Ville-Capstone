@@ -96,6 +96,55 @@ textarea:focus-visible {
     text-decoration: underline;
 }
 
+/* Notification bell */
+.bell {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    color: inherit;
+}
+.bell:hover { background: rgba(0, 0, 0, 0.08); text-decoration: none; }
+.bell svg { width: 20px; height: 20px; }
+.bell-count {
+    position: absolute;
+    top: 0;
+    right: 0;
+    min-width: 18px;
+    height: 18px;
+    padding: 0 5px;
+    border-radius: 9px;
+    background: var(--alert);
+    color: #fff;
+    font-size: 11px;
+    font-weight: 700;
+    line-height: 18px;
+    text-align: center;
+}
+.notif-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.notif-row { margin: 0; border-bottom: 1px solid var(--line); }
+.notif-item {
+    display: flex;
+    gap: 10px;
+    width: 100%;
+    padding: 12px 8px;
+    border: 0;
+    background: none;
+    color: inherit;
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+}
+.notif-item:hover { background: rgba(0, 0, 0, 0.04); }
+.notif-dot { flex: none; width: 10px; height: 10px; margin-top: 6px; border-radius: 50%; background: transparent; }
+.notif-row.unread .notif-dot { background: var(--alert); }
+.notif-row.unread .notif-msg { font-weight: 600; }
+.notif-msg { display: block; overflow-wrap: anywhere; }
+.notif-time { display: block; }
+
 /* Profile picture: a photo, or the user's initials when there is none */
 .avatar {
     display: inline-flex;
