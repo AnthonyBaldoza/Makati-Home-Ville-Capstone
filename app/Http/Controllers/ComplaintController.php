@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Notifications\ComplaintStatusChanged;
 use App\Models\Complaint;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
@@ -76,7 +77,13 @@ class ComplaintController extends Controller
         ]);
 
         $complaint->status = $validated['status'];
+        $statusChanged = $complaint->isDirty('status');
         $complaint->save();
+
+        // Tell the resident who filed it (not when staff changes their own complaint)
+        if ($statusChanged && $complaint->user_id !== $request->user()->id) {
+            $complaint->user->notify(new ComplaintStatusChanged($complaint));
+        }
 
         return redirect()->route('complaints.show', $complaint)
             ->with('success', 'Status updated.');

@@ -10,6 +10,7 @@ use App\Http\Controllers\PasswordResetController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ReservationCalendarController;
 use App\Http\Controllers\ReservationChatController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\ReservationController;
 use App\Http\Middleware\PreventReservationOverlap;
 use Illuminate\Support\Facades\Route;
@@ -74,6 +75,13 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::get('/avatars/{user}', [ProfileController::class, 'avatar'])->name('avatars.show');
+});
+
+// ---------------- Notifications ----------------
+Route::middleware('auth')->prefix('notifications')->name('notifications.')->group(function () {
+    Route::get('/', [NotificationController::class, 'index'])->name('index');
+    Route::post('/read-all', [NotificationController::class, 'readAll'])->name('read-all');
+    Route::post('/{id}/read', [NotificationController::class, 'read'])->name('read');
 });
 
 // ---------------- Community Events ----------------
